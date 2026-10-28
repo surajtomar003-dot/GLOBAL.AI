@@ -16,6 +16,7 @@ Built with a high-density Bloomberg/FactSet-inspired interface, it combines clie
 - **Personal Workspace**: Multi-collection watchlist management, asset filtering, and simulated portfolio risk analytics (Sharpe, Beta, VaR).
 - **Universal Search**: Fast spotlight search (`Cmd+K` / `Ctrl+K`) indexing assets, sovereign nations, secular themes, and economic releases.
 - **Binance Market Analysis & Live Telemetry**: Real-time quantitative depth skew (L20 bid/ask walls), trailing 24h VWAP, and USD-M futures derivatives positioning (Funding rate & Open Interest).
+- **CoinGecko Global Macro Telemetry**: Institutional multi-currency aggregated rankings, global market capitalization, 24h turnover, and multi-exchange price discovery.
 - **Supabase Cloud Backend**: SSR session management, cookies, and database connectivity.
 
 ---
@@ -67,14 +68,18 @@ For detailed architectural phases and the roadmap to transform this terminal int
 
 ```text
 ├── app/                        # Next.js App Router
-│   ├── api/binance/route.ts    # Real-time Binance market analysis API endpoint
-│   ├── market-analysis/        # Live Binance market analysis dashboard
-│   ├── page.tsx                # Supabase SSR todo demo component
+│   ├── api/                    # Server-side API Gateway routes
+│   │   ├── binance/route.ts    # Real-time Binance market analysis API endpoint
+│   │   └── coingecko/route.ts  # CoinGecko server-side secure market data gateway
+│   ├── coingecko/              # Live CoinGecko aggregated global market cap dashboard
+│   ├── market-analysis/        # Live Binance order book & derivatives telemetry dashboard
+│   ├── page.tsx                # Terminal home & launchpad
 │   └── layout.tsx              # Root HTML & body layout
 ├── docs/                       # Institutional documentation
 │   └── BINANCE_MARKET_ANALYSIS.md # Complete Binance API & telemetry specifications
 ├── utils/                      # Modular utilities & service layer
 │   ├── binance/marketAnalysis.ts # Quantitative depth skew, VWAP & signal engine
+│   ├── coingecko/marketData.ts   # CoinGecko multi-currency aggregator & cache manager
 │   └── supabase/               # Supabase SSR client, server, and middleware helpers
 ├── index.html                  # Main application terminal (Three.js WebGL, SVG charts, state)
 ├── server.js                   # Lightweight zero-dependency dev server

@@ -61,7 +61,22 @@ export default async function MarketAnalysisPage({ searchParams }: PageProps) {
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "0.75rem" }}>
+        <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+          <Link
+            href="/coingecko"
+            style={{
+              padding: "0.5rem 1rem",
+              borderRadius: "6px",
+              backgroundColor: "rgba(79, 209, 229, 0.12)",
+              border: "1px solid rgba(79, 209, 229, 0.3)",
+              color: "#4FD1E5",
+              textDecoration: "none",
+              fontSize: "0.85rem",
+              fontWeight: 600
+            }}
+          >
+            🌐 CoinGecko Global Markets ↗
+          </Link>
           <Link
             href="/"
             style={{
