@@ -15,6 +15,8 @@ Built with a high-density Bloomberg/FactSet-inspired interface, it combines clie
 - **Economic Calendar & Systemic Catalysts**: Scheduled macro events with deterministic AI shock ratings and Hawkish/Dovish scenario matrices.
 - **Personal Workspace**: Multi-collection watchlist management, asset filtering, and simulated portfolio risk analytics (Sharpe, Beta, VaR).
 - **Universal Search**: Fast spotlight search (`Cmd+K` / `Ctrl+K`) indexing assets, sovereign nations, secular themes, and economic releases.
+- **Binance Market Analysis & Live Telemetry**: Real-time quantitative depth skew (L20 bid/ask walls), trailing 24h VWAP, and USD-M futures derivatives positioning (Funding rate & Open Interest).
+- **Supabase Cloud Backend**: SSR session management, cookies, and database connectivity.
 
 ---
 
@@ -64,6 +66,16 @@ For detailed architectural phases and the roadmap to transform this terminal int
 ## Project Structure
 
 ```text
+├── app/                        # Next.js App Router
+│   ├── api/binance/route.ts    # Real-time Binance market analysis API endpoint
+│   ├── market-analysis/        # Live Binance market analysis dashboard
+│   ├── page.tsx                # Supabase SSR todo demo component
+│   └── layout.tsx              # Root HTML & body layout
+├── docs/                       # Institutional documentation
+│   └── BINANCE_MARKET_ANALYSIS.md # Complete Binance API & telemetry specifications
+├── utils/                      # Modular utilities & service layer
+│   ├── binance/marketAnalysis.ts # Quantitative depth skew, VWAP & signal engine
+│   └── supabase/               # Supabase SSR client, server, and middleware helpers
 ├── index.html                  # Main application terminal (Three.js WebGL, SVG charts, state)
 ├── server.js                   # Lightweight zero-dependency dev server
 ├── package.json                # Project manifest and runner scripts
