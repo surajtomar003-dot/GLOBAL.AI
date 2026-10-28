@@ -15,6 +15,7 @@ Built with a high-density Bloomberg/FactSet-inspired interface, it combines clie
 - **Economic Calendar & Systemic Catalysts**: Scheduled macro events with deterministic AI shock ratings and Hawkish/Dovish scenario matrices.
 - **Personal Workspace**: Multi-collection watchlist management, asset filtering, and simulated portfolio risk analytics (Sharpe, Beta, VaR).
 - **Universal Search**: Fast spotlight search (`Cmd+K` / `Ctrl+K`) indexing assets, sovereign nations, secular themes, and economic releases.
+- **Atmospheric & Logistics Telemetry (Open-Meteo)**: Physical meteorological conditions, 2-meter temperature curves, relative humidity, surface wind velocity, and 7-day numerical weather predictions across global maritime straits and commodity hubs (Free non-commercial endpoint under CC BY 4.0).
 - **Financial & Macro News Wire (NewsData.io)**: Real-time global financial news, corporate earnings catalysts, monetary policy headlines, sentiment tags, and country/category filtering (Free plan: delayed by up to 12h).
 - **Federal Reserve Macroeconomic Telemetry (FRED)**: Official St. Louis Fed sovereign data integration (US GDP, CPI inflation index & calculated YoY rate, Federal Funds policy rate, 10Y/2Y Treasury yield curve spread inversion monitor, unemployment rate, and initial jobless claims).
 - **Binance Market Analysis & Live Telemetry**: Real-time quantitative depth skew (L20 bid/ask walls), trailing 24h VWAP, and USD-M futures derivatives positioning (Funding rate & Open Interest).
@@ -74,11 +75,13 @@ For detailed architectural phases and the roadmap to transform this terminal int
 │   │   ├── binance/route.ts    # Real-time Binance market analysis API endpoint
 │   │   ├── coingecko/route.ts  # CoinGecko server-side secure market data gateway
 │   │   ├── fred/route.ts       # Federal Reserve Economic Data (FRED) API gateway
-│   │   └── news/route.ts       # NewsData.io financial & macroeconomic news gateway
+│   │   ├── news/route.ts       # NewsData.io financial & macroeconomic news gateway
+│   │   └── weather/route.ts    # Open-Meteo physical atmospheric & logistics gateway
 │   ├── coingecko/              # Live CoinGecko aggregated global market cap dashboard
 │   ├── macro/                  # Official FRED macroeconomic indicators & yield curve monitor
 │   ├── market-analysis/        # Live Binance order book & derivatives telemetry dashboard
 │   ├── news/                   # Financial & macroeconomic news intelligence dashboard
+│   ├── weather/                # Open-Meteo atmospheric & maritime trade hub dashboard
 │   ├── page.tsx                # Terminal home & launchpad
 │   └── layout.tsx              # Root HTML & body layout
 ├── docs/                       # Institutional documentation
@@ -88,6 +91,7 @@ For detailed architectural phases and the roadmap to transform this terminal int
 │   ├── coingecko/marketData.ts   # CoinGecko multi-currency aggregator & cache manager
 │   ├── fred/macroData.ts         # FRED sovereign indicators, yield spread & calculations
 │   ├── news/newsData.ts          # NewsData.io query sanitizer, cache & category manager
+│   ├── weather/weatherData.ts    # Open-Meteo hub coordinates, NWP models & WMO codes
 │   └── supabase/               # Supabase SSR client, server, and middleware helpers
 ├── index.html                  # Main application terminal (Three.js WebGL, SVG charts, state)
 ├── server.js                   # Lightweight zero-dependency dev server

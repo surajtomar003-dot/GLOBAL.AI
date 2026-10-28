@@ -201,6 +201,41 @@ export default async function Page() {
             Global business headlines, policy announcements, market catalysts, sentiment scoring, and multi-country filtering (Free plan: delayed by up to 12h).
           </p>
         </Link>
+
+        {/* Open-Meteo Weather Card */}
+        <Link
+          href="/weather"
+          style={{
+            display: "block",
+            backgroundColor: "#10151C",
+            border: "1px solid #1C2530",
+            borderRadius: "10px",
+            padding: "1.5rem",
+            textDecoration: "none",
+            color: "inherit",
+            transition: "border-color 0.15s ease"
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+            <span style={{
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              padding: "0.2rem 0.5rem",
+              borderRadius: "4px",
+              backgroundColor: "rgba(52, 211, 153, 0.15)",
+              color: "#34D399"
+            }}>
+              OPEN-METEO ATMOSPHERE
+            </span>
+            <span style={{ color: "#34D399", fontSize: "1rem" }}>→</span>
+          </div>
+          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
+            Atmospheric & Logistics Telemetry
+          </h2>
+          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
+            Physical meteorological observations, temperature curves, surface wind speeds, and 7-day numerical forecasts across major trade and commodity corridors.
+          </p>
+        </Link>
       </div>
 
       {/* Supabase Integration Section */}

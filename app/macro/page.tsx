@@ -209,6 +209,22 @@ export default function MacroDashboardPage() {
           </button>
 
           <Link
+            href="/weather"
+            style={{
+              padding: "0.5rem 0.9rem",
+              borderRadius: "6px",
+              backgroundColor: "rgba(52, 211, 153, 0.12)",
+              border: "1px solid rgba(52, 211, 153, 0.3)",
+              color: "#34D399",
+              textDecoration: "none",
+              fontSize: "0.82rem",
+              fontWeight: 600
+            }}
+          >
+            🌤️ Weather ↗
+          </Link>
+
+          <Link
             href="/news"
             style={{
               padding: "0.5rem 0.9rem",
