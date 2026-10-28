@@ -181,6 +181,22 @@ export default function CoinGeckoDashboardPage() {
           </button>
 
           <Link
+            href="/news"
+            style={{
+              padding: "0.5rem 0.9rem",
+              borderRadius: "6px",
+              backgroundColor: "rgba(79, 209, 229, 0.12)",
+              border: "1px solid rgba(79, 209, 229, 0.3)",
+              color: "#4FD1E5",
+              textDecoration: "none",
+              fontSize: "0.82rem",
+              fontWeight: 600
+            }}
+          >
+            📰 News Wire ↗
+          </Link>
+
+          <Link
             href="/macro"
             style={{
               padding: "0.5rem 0.9rem",
