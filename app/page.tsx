@@ -260,15 +260,15 @@ export default async function Page() {
               backgroundColor: "rgba(79, 209, 229, 0.15)",
               color: "#4FD1E5"
             }}>
-              FINNHUB EQUITIES
+              EQUITY & TECHNICAL TELEMETRY
             </span>
             <span style={{ color: "#4FD1E5", fontSize: "1rem" }}>→</span>
           </div>
           <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
-            Equity Markets & Corporate Intelligence
+            Equity Markets & Alpha Vantage Technicals
           </h2>
           <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
-            Consolidated stock quotes (AAPL, MSFT, NVDA), P/E ratios, diluted EPS, 52-week ranges, trading sessions, and real company news catalysts.
+            Consolidated stock quotes, historical OHLCV charts, 20-Day SMA/EMA moving averages, 14-Day RSI momentum, valuation ratios, and corporate catalysts.
           </p>
         </Link>
       </div>

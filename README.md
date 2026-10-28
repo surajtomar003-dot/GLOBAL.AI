@@ -19,6 +19,7 @@ Built with a high-density Bloomberg/FactSet-inspired interface, it combines clie
 - **Financial & Macro News Wire (NewsData.io)**: Real-time global financial news, corporate earnings catalysts, monetary policy headlines, sentiment tags, and country/category filtering (Free plan: delayed by up to 12h).
 - **Federal Reserve Macroeconomic Telemetry (FRED)**: Official St. Louis Fed sovereign data integration (US GDP, CPI inflation index & calculated YoY rate, Federal Funds policy rate, 10Y/2Y Treasury yield curve spread inversion monitor, unemployment rate, and initial jobless claims).
 - **Equity Markets & Stock Intelligence (Finnhub)**: Institutional equity quote telemetry (price, absolute/percentage change, intraday open/high/low, previous close), company profiles (sector, industry, market cap, exchange), valuation metrics (P/E TTM, EPS TTM, Beta, 52-week high/low), company news catalysts, and live exchange market session tracking (Pre-Market, Regular, Post-Market, Closed).
+- **Historical OHLCV & Technical Indicators (Alpha Vantage)**: End-of-day daily price series, interactive multi-period SVG charting, 20-Day SMA, 20-Day EMA, and 14-Day RSI momentum oscillators with aggressive in-memory caching to respect free-tier limits.
 - **Binance Market Analysis & Live Telemetry**: Real-time quantitative depth skew (L20 bid/ask walls), trailing 24h VWAP, and USD-M futures derivatives positioning (Funding rate & Open Interest).
 - **CoinGecko Global Macro Telemetry**: Institutional multi-currency aggregated rankings, global market capitalization, 24h turnover, and multi-exchange price discovery.
 - **Supabase Cloud Backend**: SSR session management, cookies, and database connectivity.
@@ -73,6 +74,7 @@ For detailed architectural phases and the roadmap to transform this terminal int
 ```text
 ├── app/                        # Next.js App Router
 │   ├── api/                    # Server-side API Gateway routes
+│   │   ├── alpha-vantage/route.ts # Alpha Vantage historical OHLCV & technical indicators gateway
 │   │   ├── binance/route.ts    # Real-time Binance market analysis API endpoint
 │   │   ├── coingecko/route.ts  # CoinGecko server-side secure market data gateway
 │   │   ├── finnhub/route.ts    # Finnhub Stock Market & Equity Intelligence API gateway
@@ -83,13 +85,14 @@ For detailed architectural phases and the roadmap to transform this terminal int
 │   ├── macro/                  # Official FRED macroeconomic indicators & yield curve monitor
 │   ├── market-analysis/        # Live Binance order book & derivatives telemetry dashboard
 │   ├── news/                   # Financial & macroeconomic news intelligence dashboard
-│   ├── stocks/                 # Institutional Finnhub equity quotes, valuation & news dashboard
+│   ├── stocks/                 # Institutional Finnhub equity quotes, valuation & Alpha Vantage technical dashboard
 │   ├── weather/                # Open-Meteo atmospheric & maritime trade hub dashboard
 │   ├── page.tsx                # Terminal home & launchpad
 │   └── layout.tsx              # Root HTML & body layout
 ├── docs/                       # Institutional documentation
 │   └── BINANCE_MARKET_ANALYSIS.md # Complete Binance API & telemetry specifications
 ├── utils/                      # Modular utilities & service layer
+│   ├── alpha-vantage/alphaVantageData.ts # Alpha Vantage OHLCV parsing, SMA/EMA/RSI engine & caching
 │   ├── binance/marketAnalysis.ts # Quantitative depth skew, VWAP & signal engine
 │   ├── coingecko/marketData.ts   # CoinGecko multi-currency aggregator & cache manager
 │   ├── finnhub/stockData.ts      # Finnhub quote sanitization, valuation metrics & rate limiting
