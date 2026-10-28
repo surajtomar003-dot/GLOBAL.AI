@@ -29,11 +29,19 @@ Built with a high-density Bloomberg/FactSet-inspired interface, it combines clie
 
 ## Getting Started
 
-No build step or npm installation is required.
+### Quick Start (Dev Server):
+The project includes a zero-dependency local development server:
 
-### Quick Start:
-Simply open `index.html` in any modern web browser:
+```bash
+# Start server (default: port 3000)
+npm start
+# OR
+npm run dev
+```
+Then open `http://localhost:3000` in your web browser.
 
+### Direct Browser Opening:
+Or open `index.html` directly:
 ```bash
 # macOS
 open index.html
@@ -45,24 +53,23 @@ xdg-open index.html
 start index.html
 ```
 
-### Or serve via any static HTTP server:
-```bash
-# Python 3
-python3 -m http.server 8080
+---
 
-# Node.js
-npx serve .
-```
-Then navigate to `http://localhost:8080` in your browser.
+## Roadmap & Development Phases
+
+For detailed architectural phases and the roadmap to transform this terminal into an active paper-trading platform, see [PROJECT_PHASES_ROADMAP.md](PROJECT_PHASES_ROADMAP.md).
 
 ---
 
 ## Project Structure
 
 ```text
-├── index.html                  # Main application terminal (CSS, HTML, Three.js spatial engine, routing & state)
-├── README.md                   # Project overview & documentation
+├── index.html                  # Main application terminal (Three.js WebGL, SVG charts, state)
+├── server.js                   # Lightweight zero-dependency dev server
+├── package.json                # Project manifest and runner scripts
+├── PROJECT_PHASES_ROADMAP.md   # Architectural phased development roadmap
 ├── TRADING_READINESS_AUDIT.md  # Architectural & trading readiness audit report
+├── backups/                    # Safely archived iterations & backups
 └── .gitignore                  # Git ignore rules
 ```
 

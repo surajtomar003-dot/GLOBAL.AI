@@ -1,0 +1,23 @@
+{
+  "name": "global-ai-terminal",
+  "version": "1.0.0",
+  "description": "Global Intelligence — Institutional Financial Terminal for Global Macro Monitoring & Telemetry",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node --check server.js"
+  },
+  "keywords": [
+    "financial-terminal",
+    "bloomberg",
+    "macroeconomics",
+    "trading",
+    "threejs",
+    "webgl",
+    "telemetry"
+  ],
+  "author": "Global.ai Team",
+  "license": "MIT"
+}
