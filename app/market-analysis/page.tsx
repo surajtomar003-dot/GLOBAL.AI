@@ -63,6 +63,21 @@ export default async function MarketAnalysisPage({ searchParams }: PageProps) {
 
         <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
           <Link
+            href="/macro"
+            style={{
+              padding: "0.5rem 1rem",
+              borderRadius: "6px",
+              backgroundColor: "rgba(232, 181, 99, 0.12)",
+              border: "1px solid rgba(232, 181, 99, 0.3)",
+              color: "#E8B563",
+              textDecoration: "none",
+              fontSize: "0.85rem",
+              fontWeight: 600
+            }}
+          >
+            🏛️ FRED Macro ↗
+          </Link>
+          <Link
             href="/coingecko"
             style={{
               padding: "0.5rem 1rem",

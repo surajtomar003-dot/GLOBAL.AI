@@ -181,6 +181,22 @@ export default function CoinGeckoDashboardPage() {
           </button>
 
           <Link
+            href="/macro"
+            style={{
+              padding: "0.5rem 0.9rem",
+              borderRadius: "6px",
+              backgroundColor: "rgba(232, 181, 99, 0.12)",
+              border: "1px solid rgba(232, 181, 99, 0.3)",
+              color: "#E8B563",
+              textDecoration: "none",
+              fontSize: "0.82rem",
+              fontWeight: 600
+            }}
+          >
+            🏛️ FRED Macro ↗
+          </Link>
+
+          <Link
             href="/market-analysis"
             style={{
               padding: "0.5rem 0.9rem",
