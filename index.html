@@ -147,8 +147,9 @@
   .legend-item{display:flex;align-items:center;gap:7px;}
   .legend-dot{width:6px;height:6px;border-radius:50%;flex:none;}
   .globe-controls{position:absolute;right:16px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:3;}
-  .gc-btn{width:30px;height:30px;border-radius:var(--radius-s);background:rgba(16,21,28,.8);border:1px solid var(--border);color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:14px;backdrop-filter:blur(6px);}
+  .gc-btn{width:30px;height:30px;border-radius:var(--radius-s);background:rgba(16,21,28,.8);border:1px solid var(--border);color:var(--text-dim);display:flex;align-items:center;justify-content:center;font-size:14px;backdrop-filter:blur(6px);cursor:pointer;}
   .gc-btn:hover{color:var(--accent);border-color:var(--accent);}
+  .gc-btn.active{color:var(--accent);border-color:var(--accent);background:rgba(79,209,229,.18);}
   .view-toggle{position:absolute;bottom:16px;right:16px;z-index:3;display:flex;gap:2px;background:rgba(16,21,28,.8);border:1px solid var(--border);border-radius:var(--radius-s);padding:3px;backdrop-filter:blur(6px);}
   .vt-btn{padding:6px 12px;border-radius:5px;background:transparent;border:none;color:var(--text-faint);font-size:10.5px;font-weight:600;}
   .vt-btn.active{background:var(--accent-dim);color:var(--accent);}
@@ -1794,6 +1795,7 @@
             <button class="gc-btn" id="gc-zoomin" aria-label="Zoom in">＋</button>
             <button class="gc-btn" id="gc-zoomout" aria-label="Zoom out">－</button>
             <button class="gc-btn" id="gc-reset" aria-label="Reset view">⟲</button>
+            <button class="gc-btn active" id="gc-borders" aria-label="Toggle country borders" title="Toggle Natural Earth Country Boundaries">🌐</button>
           </div>
           <div class="view-toggle" id="globe-view-toggle">
             <button class="vt-btn active" data-vt="signature">Signature</button>
@@ -5019,10 +5021,14 @@ const SpatialDataService = {
     'clean-energy': { label:'Clean Energy', metricName:'Transition Capex', color:0x4ADE80, stress:22.0, status:'EXPANDING' }
   },
   worldCatalog: WorldCountryCatalog,
+  naturalEarthCountries: [],
   getCountry(code) {
     if(!code) return null;
     code = code.toUpperCase();
-    return this.countries.find(c => c.code === code) || this.worldCatalog.find(c => c.code === code) || null;
+    return this.countries.find(c => c.code === code) ||
+      (this.worldCatalog && this.worldCatalog.find(c => c.code === code)) ||
+      (this.naturalEarthCountries && this.naturalEarthCountries.find(c => (c.code && c.code.toUpperCase() === code) || (c.ISO_A2 && c.ISO_A2.toUpperCase() === code) || (c.ISO_A3 && c.ISO_A3.toUpperCase() === code) || (c.NAME && c.NAME.toUpperCase() === code))) ||
+      null;
   }
 };
 
@@ -5125,6 +5131,103 @@ dotGeo.setAttribute('position', new THREE.Float32BufferAttribute(dotPositions,3)
 dotGeo.setAttribute('color', new THREE.Float32BufferAttribute(dotColors,3));
 const dotMat = new THREE.PointsMaterial({size:0.022, vertexColors:true, transparent:true, opacity:0.88, sizeAttenuation:true});
 globeGroup.add(new THREE.Points(dotGeo, dotMat));
+
+/* ===================================================
+   NATURAL EARTH ADMIN 0 - SOVEREIGN COUNTRY BOUNDARIES
+   High-Fidelity 1:10m Geographic Dataset Integration
+   =================================================== */
+const countryBoundariesGroup = new THREE.Group();
+globeGroup.add(countryBoundariesGroup);
+
+let countryBoundaryMesh = null;
+const countryBoundaryMat = new THREE.LineBasicMaterial({
+  color: 0x4FD1E5,
+  transparent: true,
+  opacity: 0.65,
+  depthWrite: false
+});
+
+let naturalEarthCountries = [];
+
+async function loadNaturalEarthBoundaries(){
+  const paths = [
+    '/data/countries.geojson',
+    'public/data/countries.geojson',
+    'data/countries.geojson',
+    '/data/countries.json',
+    'public/data/countries.json'
+  ];
+
+  let geojson = null;
+  for(const p of paths){
+    try {
+      const res = await fetch(p);
+      if(res.ok){
+        geojson = await res.json();
+        break;
+      }
+    } catch(e) {
+      // try next fallback path
+    }
+  }
+
+  if(!geojson || !geojson.features || !geojson.features.length){
+    console.warn('[Natural Earth] Could not load country boundary dataset; running with point cloud mesh.');
+    return;
+  }
+
+  try {
+    const linePositions = [];
+    const radius = 2.424; // Hover precisely over the globe surface (2.42)
+    const features = geojson.features;
+    naturalEarthCountries = features.map(f => f.properties);
+    if(SpatialDataService) SpatialDataService.naturalEarthCountries = naturalEarthCountries;
+
+    for(let f = 0; f < features.length; f++){
+      const feat = features[f];
+      const geom = feat.geometry;
+      if(!geom || !geom.coordinates) continue;
+
+      const rings = [];
+      if(geom.type === 'Polygon'){
+        rings.push(...geom.coordinates);
+      } else if(geom.type === 'MultiPolygon'){
+        for(let m = 0; m < geom.coordinates.length; m++){
+          rings.push(...geom.coordinates[m]);
+        }
+      }
+
+      for(let r = 0; r < rings.length; r++){
+        const ring = rings[r];
+        if(!ring || ring.length < 2) continue;
+
+        for(let i = 0; i < ring.length - 1; i++){
+          const p1 = ring[i];
+          const p2 = ring[i + 1];
+          // Skip antimeridian seam crossing
+          if(Math.abs(p2[0] - p1[0]) > 180) continue;
+
+          const v1 = latLonToVec3(p1[1], p1[0], radius);
+          const v2 = latLonToVec3(p2[1], p2[0], radius);
+
+          linePositions.push(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
+        }
+      }
+    }
+
+    if(linePositions.length > 0){
+      const boundaryGeo = new THREE.BufferGeometry();
+      boundaryGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+      countryBoundaryMesh = new THREE.LineSegments(boundaryGeo, countryBoundaryMat);
+      countryBoundariesGroup.add(countryBoundaryMesh);
+      console.log(`[Natural Earth] Successfully rendered 258 sovereign country boundaries on globe (${linePositions.length / 6} line segments).`);
+    }
+  } catch(err) {
+    console.error('[Natural Earth] Error parsing sovereign country boundaries:', err);
+  }
+}
+
+loadNaturalEarthBoundaries();
 
 /* Atmospheric Horizon Limb Glow (Amber Inner Rim · Cyan Outer Halo) */
 function makeGlowTexture(){
@@ -5345,6 +5448,13 @@ canvas.addEventListener('wheel', e=>{ e.preventDefault(); zoom = Math.max(5.5, M
 document.getElementById('gc-zoomin').addEventListener('click',()=>{ zoom = Math.max(5.5, zoom-1); });
 document.getElementById('gc-zoomout').addEventListener('click',()=>{ zoom = Math.min(13, zoom+1); });
 document.getElementById('gc-reset').addEventListener('click',()=>{ rotX=-0.15; rotY=0.3; zoom=8.5; });
+const bordersBtn = document.getElementById('gc-borders');
+if(bordersBtn){
+  bordersBtn.addEventListener('click',()=>{
+    countryBoundariesGroup.visible = !countryBoundariesGroup.visible;
+    bordersBtn.classList.toggle('active', countryBoundariesGroup.visible);
+  });
+}
 
 /* Spatial Intelligence Engine Controller (Zero Canvas / WebGL Re-creation) */
 const SpatialEngine = {
@@ -5382,6 +5492,18 @@ const SpatialEngine = {
       dotMat.size = isSig ? 0.024 : 0.020;
     }
 
+    if(countryBoundaryMat){
+      if(isHeat){
+        countryBoundaryMat.opacity = 0.40;
+      } else if(isNet || isFlows){
+        countryBoundaryMat.opacity = 0.50;
+      } else if(isHybrid){
+        countryBoundaryMat.opacity = 0.60;
+      } else {
+        countryBoundaryMat.opacity = 0.65;
+      }
+    }
+
     if(isHeat || isHybrid){
       this.applyHeatmapColors(this.currentTheme);
     } else {
@@ -5413,6 +5535,10 @@ const SpatialEngine = {
     if(hudFlows) hudFlows.textContent = `${SpatialDataService.corridors.length} ACTIVE`;
 
     this.updateHeatmapDiscs(themeKey);
+
+    if(countryBoundaryMat && themeInfo.color){
+      countryBoundaryMat.color.set(themeInfo.color);
+    }
 
     if(this.currentMode === 'heatmap' || this.currentMode === 'hybrid'){
       this.applyHeatmapColors(themeKey);

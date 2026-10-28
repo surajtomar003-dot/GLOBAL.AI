@@ -28,3 +28,14 @@ yarn-error.log*
 out/
 .env*.local
 *.tsbuildinfo
+
+# Natural Earth raw source shapefiles (optimized GeoJSON is tracked in public/data)
+data/*.geojson
+data/*.json
+data/natural-earth/*.geojson
+data/natural-earth/ne_10m_admin_0_countries/*.shp
+data/natural-earth/ne_10m_admin_0_countries/*.dbf
+data/natural-earth/ne_10m_admin_0_countries/*.shx
+data/natural-earth/ne_10m_admin_0_countries/*.prj
+data/natural-earth/ne_10m_admin_0_countries/*.cpg
+data/natural-earth/ne_10m_admin_0_countries/*.html

@@ -8,7 +8,7 @@ Built with a high-density Bloomberg/FactSet-inspired interface, it combines clie
 
 ## Key Features
 
-- **3D Spatial Intelligence**: Interactive Three.js WebGL Earth with financial hub arcs, cross-border capital flows, and sovereign heatmap layers.
+- **3D Spatial Intelligence & Natural Earth Globe**: Interactive Three.js WebGL Earth with 258 sovereign country boundaries rendered from the official Natural Earth 1:10m Admin 0 dataset, financial hub arcs, cross-border capital flow pulses, and sovereign risk heatmap layers.
 - **Global Macro & Regime Monitor**: Liquidity pulse, sovereign curve spreads, policy bias, and cross-asset correlation matrices.
 - **Multi-Asset Telemetry**: Institutional screener, SVG technical charts with crosshairs, fundamental quality scorecards, and transmission networks across equities, commodities, forex, and rates.
 - **AI Causal Thesis & Transmission Radar**: Deterministic causal reasoning nodes identifying transmission channels (e.g. Hyperscaler Capex, Monetary Easing, Maritime Energy Transit).
@@ -94,6 +94,10 @@ For detailed architectural phases and the roadmap to transform this terminal int
 │   └── layout.tsx              # Root HTML & body layout
 ├── docs/                       # Institutional documentation
 │   └── BINANCE_MARKET_ANALYSIS.md # Complete Binance API & telemetry specifications
+├── public/                     # Public static assets & datasets
+│   └── data/countries.geojson  # Optimized Natural Earth 1:10m sovereign country boundaries
+├── scripts/                    # Geographic processing & automation scripts
+│   └── convert_natural_earth.py # Shapefile-to-GeoJSON converter & vertex optimizer
 ├── utils/                      # Modular utilities & service layer
 │   ├── alpha-vantage/alphaVantageData.ts # Alpha Vantage OHLCV parsing, SMA/EMA/RSI engine & caching
 │   ├── binance/marketAnalysis.ts # Quantitative depth skew, VWAP & signal engine
