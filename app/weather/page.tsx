@@ -185,6 +185,22 @@ export default function WeatherIntelligencePage() {
           </button>
 
           <Link
+            href="/stocks"
+            style={{
+              padding: "0.5rem 0.9rem",
+              borderRadius: "6px",
+              backgroundColor: "rgba(79, 209, 229, 0.12)",
+              border: "1px solid rgba(79, 209, 229, 0.3)",
+              color: "#4FD1E5",
+              textDecoration: "none",
+              fontSize: "0.82rem",
+              fontWeight: 600
+            }}
+          >
+            📈 Stocks ↗
+          </Link>
+
+          <Link
             href="/news"
             style={{
               padding: "0.5rem 0.9rem",

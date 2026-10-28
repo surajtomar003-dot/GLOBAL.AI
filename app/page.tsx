@@ -236,6 +236,41 @@ export default async function Page() {
             Physical meteorological observations, temperature curves, surface wind speeds, and 7-day numerical forecasts across major trade and commodity corridors.
           </p>
         </Link>
+
+        {/* Finnhub Stock Intelligence Card */}
+        <Link
+          href="/stocks"
+          style={{
+            display: "block",
+            backgroundColor: "#10151C",
+            border: "1px solid #1C2530",
+            borderRadius: "10px",
+            padding: "1.5rem",
+            textDecoration: "none",
+            color: "inherit",
+            transition: "border-color 0.15s ease"
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+            <span style={{
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              padding: "0.2rem 0.5rem",
+              borderRadius: "4px",
+              backgroundColor: "rgba(79, 209, 229, 0.15)",
+              color: "#4FD1E5"
+            }}>
+              FINNHUB EQUITIES
+            </span>
+            <span style={{ color: "#4FD1E5", fontSize: "1rem" }}>→</span>
+          </div>
+          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
+            Equity Markets & Corporate Intelligence
+          </h2>
+          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
+            Consolidated stock quotes (AAPL, MSFT, NVDA), P/E ratios, diluted EPS, 52-week ranges, trading sessions, and real company news catalysts.
+          </p>
+        </Link>
       </div>
 
       {/* Supabase Integration Section */}
