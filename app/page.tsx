@@ -271,6 +271,41 @@ export default async function Page() {
             Consolidated stock quotes, historical OHLCV charts, 20-Day SMA/EMA moving averages, 14-Day RSI momentum, valuation ratios, and corporate catalysts.
           </p>
         </Link>
+
+        {/* ExchangeRate-API Forex Card */}
+        <Link
+          href="/forex"
+          style={{
+            display: "block",
+            backgroundColor: "#10151C",
+            border: "1px solid #1C2530",
+            borderRadius: "10px",
+            padding: "1.5rem",
+            textDecoration: "none",
+            color: "inherit",
+            transition: "border-color 0.15s ease"
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+            <span style={{
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              padding: "0.2rem 0.5rem",
+              borderRadius: "4px",
+              backgroundColor: "rgba(52, 211, 153, 0.15)",
+              color: "#34D399"
+            }}>
+              EXCHANGERATE-API FOREX
+            </span>
+            <span style={{ color: "#34D399", fontSize: "1rem" }}>→</span>
+          </div>
+          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
+            Foreign Exchange & Currency Parity
+          </h2>
+          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
+            Global currency exchange rates across 160+ currencies (USD, INR, EUR, GBP, JPY, CNY), conversion calculator, and daily reference parity.
+          </p>
+        </Link>
       </div>
 
       {/* Supabase Integration Section */}
