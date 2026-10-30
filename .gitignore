@@ -15,6 +15,7 @@ backups/
 *.swp
 *~
 *.log
+*.zip
 
 # Node & Package Managers
 node_modules/

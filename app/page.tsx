@@ -1,399 +1,45 @@
-import { createClient } from "@/utils/supabase/server";
-import { cookies } from "next/headers";
+"use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Globe from "@/components/Globe";
 
-export default async function Page() {
-  const cookieStore = await cookies();
-  const supabase = createClient(cookieStore);
+type Snap = { ts: number; crypto: { sym: string; price: number; chg: number }[]; fx: Record<string, number>; cryptoSrc: string; stale?: boolean };
+const usd = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits: n > 100 ? 0 : 2 });
 
-  let todos: { id: string | number; name: string }[] | null = null;
-  let supabaseError: string | null = null;
-
-  try {
-    const { data, error } = await supabase.from("todos").select();
-    if (error) {
-      supabaseError = error.message;
-    } else {
-      todos = data;
-    }
-  } catch (err: any) {
-    supabaseError = err?.message || "Failed to query Supabase";
-  }
-
+export default function Home() {
+  const [s, setS] = useState<Snap | null>(null);
+  const [err, setErr] = useState(false);
+  useEffect(() => {
+    let on = true;
+    const load = () => fetch("/api/snapshot").then((r) => r.json()).then((d) => on && (setS(d), setErr(false))).catch(() => on && setErr(true));
+    load(); const t = setInterval(load, 30000);
+    return () => { on = false; clearInterval(t); };
+  }, []);
+  const status = err ? "OFFLINE" : !s ? "CONNECTING" : s.stale ? "CACHED" : "LIVE";
   return (
-    <main style={{
-      minHeight: "100vh",
-      backgroundColor: "#05070A",
-      color: "#F2F5F7",
-      fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-      padding: "2.5rem"
-    }}>
-      {/* Header */}
-      <header style={{
-        borderBottom: "1px solid #1C2530",
-        paddingBottom: "1.5rem",
-        marginBottom: "2rem"
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-          <h1 style={{ margin: 0, fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.02em" }}>
-            GLOBAL.AI — Financial Intelligence Terminal
-          </h1>
-          <span style={{
-            fontSize: "0.7rem",
-            fontWeight: 700,
-            padding: "0.2rem 0.5rem",
-            borderRadius: "4px",
-            backgroundColor: "rgba(79, 209, 229, 0.15)",
-            color: "#4FD1E5",
-            border: "1px solid rgba(79, 209, 229, 0.3)"
-          }}>
-            INSTITUTIONAL
-          </span>
-        </div>
-        <p style={{ margin: "0.4rem 0 0 0", color: "#8B98A7", fontSize: "0.9rem" }}>
-          Global macro monitoring, multi-exchange telemetry, and persistent cloud ledger
-        </p>
+    <main className="shell">
+      <header className="bar">
+        <div className="brand"><span className="dot" />GLOBAL<b>.AI</b></div>
+        <nav>{[["stocks","Stocks"],["forex","Forex"],["macro","Macro"],["news","News"],["weather","Weather"]].map(([h, l]) => <Link key={h} href={`/${h}`}>{l}</Link>)}</nav>
+        <div className={`chip ${status.toLowerCase()}`}>{status}{s && <em>{new Date(s.ts).toLocaleTimeString()}</em>}</div>
       </header>
-
-      {/* Quick Launchpad Navigation */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-        gap: "1.5rem",
-        marginBottom: "2.5rem"
-      }}>
-        {/* FRED Macro Card */}
-        <Link
-          href="/macro"
-          style={{
-            display: "block",
-            backgroundColor: "#10151C",
-            border: "1px solid #1C2530",
-            borderRadius: "10px",
-            padding: "1.5rem",
-            textDecoration: "none",
-            color: "inherit",
-            transition: "border-color 0.15s ease"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              padding: "0.2rem 0.5rem",
-              borderRadius: "4px",
-              backgroundColor: "rgba(232, 181, 99, 0.15)",
-              color: "#E8B563"
-            }}>
-              FRED MACRO TELEMETRY
-            </span>
-            <span style={{ color: "#E8B563", fontSize: "1rem" }}>→</span>
-          </div>
-          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
-            Federal Reserve Economic Data
-          </h2>
-          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
-            Official United States GDP, CPI inflation index & YoY calculations, Fed Funds target rate, 10Y-2Y yield curve spread, unemployment, and initial claims.
-          </p>
-        </Link>
-
-        {/* CoinGecko Card */}
-        <Link
-          href="/coingecko"
-          style={{
-            display: "block",
-            backgroundColor: "#10151C",
-            border: "1px solid #1C2530",
-            borderRadius: "10px",
-            padding: "1.5rem",
-            textDecoration: "none",
-            color: "inherit",
-            transition: "border-color 0.15s ease"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              padding: "0.2rem 0.5rem",
-              borderRadius: "4px",
-              backgroundColor: "rgba(79, 209, 229, 0.15)",
-              color: "#4FD1E5"
-            }}>
-              COINGECKO API
-            </span>
-            <span style={{ color: "#4FD1E5", fontSize: "1rem" }}>→</span>
-          </div>
-          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
-            Global Macro & Market Caps
-          </h2>
-          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
-            Aggregated cryptocurrency rankings, global volume turnover, multi-currency pricing (USD, EUR, GBP, INR), and 24h high/low spreads across 1,000+ exchanges.
-          </p>
-        </Link>
-
-        {/* Binance Telemetry Card */}
-        <Link
-          href="/market-analysis"
-          style={{
-            display: "block",
-            backgroundColor: "#10151C",
-            border: "1px solid #1C2530",
-            borderRadius: "10px",
-            padding: "1.5rem",
-            textDecoration: "none",
-            color: "inherit",
-            transition: "border-color 0.15s ease"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              padding: "0.2rem 0.5rem",
-              borderRadius: "4px",
-              backgroundColor: "rgba(52, 211, 153, 0.15)",
-              color: "#34D399"
-            }}>
-              BINANCE TELEMETRY
-            </span>
-            <span style={{ color: "#34D399", fontSize: "1rem" }}>→</span>
-          </div>
-          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
-            Order Book & Derivatives Telemetry
-          </h2>
-          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
-            Real-time Level-20 order book depth skew, bid/ask wall absorption, trailing 24h VWAP spreads, and USD-M futures funding rates & open interest.
-          </p>
-        </Link>
-
-        {/* NewsData.io News Wire Card */}
-        <Link
-          href="/news"
-          style={{
-            display: "block",
-            backgroundColor: "#10151C",
-            border: "1px solid #1C2530",
-            borderRadius: "10px",
-            padding: "1.5rem",
-            textDecoration: "none",
-            color: "inherit",
-            transition: "border-color 0.15s ease"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              padding: "0.2rem 0.5rem",
-              borderRadius: "4px",
-              backgroundColor: "rgba(79, 209, 229, 0.15)",
-              color: "#4FD1E5"
-            }}>
-              NEWSDATA.IO WIRE
-            </span>
-            <span style={{ color: "#4FD1E5", fontSize: "1rem" }}>→</span>
-          </div>
-          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
-            Financial & Macro News Wire
-          </h2>
-          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
-            Global business headlines, policy announcements, market catalysts, sentiment scoring, and multi-country filtering (Free plan: delayed by up to 12h).
-          </p>
-        </Link>
-
-        {/* Open-Meteo Weather Card */}
-        <Link
-          href="/weather"
-          style={{
-            display: "block",
-            backgroundColor: "#10151C",
-            border: "1px solid #1C2530",
-            borderRadius: "10px",
-            padding: "1.5rem",
-            textDecoration: "none",
-            color: "inherit",
-            transition: "border-color 0.15s ease"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              padding: "0.2rem 0.5rem",
-              borderRadius: "4px",
-              backgroundColor: "rgba(52, 211, 153, 0.15)",
-              color: "#34D399"
-            }}>
-              OPEN-METEO ATMOSPHERE
-            </span>
-            <span style={{ color: "#34D399", fontSize: "1rem" }}>→</span>
-          </div>
-          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
-            Atmospheric & Logistics Telemetry
-          </h2>
-          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
-            Physical meteorological observations, temperature curves, surface wind speeds, and 7-day numerical forecasts across major trade and commodity corridors.
-          </p>
-        </Link>
-
-        {/* Finnhub Stock Intelligence Card */}
-        <Link
-          href="/stocks"
-          style={{
-            display: "block",
-            backgroundColor: "#10151C",
-            border: "1px solid #1C2530",
-            borderRadius: "10px",
-            padding: "1.5rem",
-            textDecoration: "none",
-            color: "inherit",
-            transition: "border-color 0.15s ease"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              padding: "0.2rem 0.5rem",
-              borderRadius: "4px",
-              backgroundColor: "rgba(79, 209, 229, 0.15)",
-              color: "#4FD1E5"
-            }}>
-              EQUITY & TECHNICAL TELEMETRY
-            </span>
-            <span style={{ color: "#4FD1E5", fontSize: "1rem" }}>→</span>
-          </div>
-          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
-            Equity Markets & Alpha Vantage Technicals
-          </h2>
-          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
-            Consolidated stock quotes, historical OHLCV charts, 20-Day SMA/EMA moving averages, 14-Day RSI momentum, valuation ratios, and corporate catalysts.
-          </p>
-        </Link>
-
-        {/* ExchangeRate-API Forex Card */}
-        <Link
-          href="/forex"
-          style={{
-            display: "block",
-            backgroundColor: "#10151C",
-            border: "1px solid #1C2530",
-            borderRadius: "10px",
-            padding: "1.5rem",
-            textDecoration: "none",
-            color: "inherit",
-            transition: "border-color 0.15s ease"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              padding: "0.2rem 0.5rem",
-              borderRadius: "4px",
-              backgroundColor: "rgba(52, 211, 153, 0.15)",
-              color: "#34D399"
-            }}>
-              EXCHANGERATE-API FOREX
-            </span>
-            <span style={{ color: "#34D399", fontSize: "1rem" }}>→</span>
-          </div>
-          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
-            Foreign Exchange & Currency Parity
-          </h2>
-          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
-            Global currency exchange rates across 160+ currencies (USD, INR, EUR, GBP, JPY, CNY), conversion calculator, and daily reference parity.
-          </p>
-        </Link>
-
-        {/* Natural Earth 3D Globe Card */}
-        <a
-          href="/index.html"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "block",
-            backgroundColor: "#10151C",
-            border: "1px solid #1C2530",
-            borderRadius: "10px",
-            padding: "1.5rem",
-            textDecoration: "none",
-            color: "inherit",
-            transition: "border-color 0.15s ease"
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
-            <span style={{
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              padding: "0.2rem 0.5rem",
-              borderRadius: "4px",
-              backgroundColor: "rgba(79, 209, 229, 0.15)",
-              color: "#4FD1E5"
-            }}>
-              THREE.JS + NATURAL EARTH
-            </span>
-            <span style={{ color: "#4FD1E5", fontSize: "1rem" }}>↗</span>
-          </div>
-          <h2 style={{ margin: "0 0 0.5rem 0", fontSize: "1.2rem", fontWeight: 700 }}>
-            3D Spatial Globe & Sovereign Boundaries
-          </h2>
-          <p style={{ margin: 0, color: "#8B98A7", fontSize: "0.85rem", lineHeight: "1.4" }}>
-            Interactive Three.js WebGL globe with 258 Natural Earth sovereign country boundaries, cross-border capital flow arcs, financial hubs, and macro heatmap layers.
-          </p>
-        </a>
-      </div>
-
-      {/* Supabase Integration Section */}
-      <section style={{
-        backgroundColor: "#10151C",
-        border: "1px solid #1C2530",
-        borderRadius: "10px",
-        padding: "1.5rem"
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.75rem" }}>
-          <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 700 }}>
-            Supabase Cloud Database & Auth Status
-          </h3>
-          <span style={{
-            fontSize: "0.7rem",
-            fontWeight: 700,
-            padding: "0.15rem 0.45rem",
-            borderRadius: "4px",
-            backgroundColor: supabaseError ? "rgba(240, 97, 107, 0.15)" : "rgba(52, 211, 153, 0.15)",
-            color: supabaseError ? "#F0616B" : "#34D399"
-          }}>
-            {supabaseError ? "DISCONNECTED" : "CONNECTED"}
-          </span>
+      <section className="hero">
+        <div className="copy">
+          <p className="eyebrow">GLOBAL MACRO TELEMETRY</p>
+          <h1>Poori duniya ka market,<br />ek globe par.</h1>
+          <p className="sub">10 financial hubs, live capital-flow arcs. Drag karke ghumao.</p>
         </div>
-
-        <p style={{ color: "#8B98A7", fontSize: "0.85rem", marginTop: 0 }}>
-          Connected via SSR Server Client with cookie session management:
-        </p>
-
-        {supabaseError ? (
-          <div style={{
-            padding: "0.85rem",
-            borderRadius: "6px",
-            backgroundColor: "rgba(240, 97, 107, 0.1)",
-            border: "1px solid rgba(240, 97, 107, 0.25)",
-            color: "#F0616B",
-            fontSize: "0.85rem"
-          }}>
-            Note: {supabaseError} (Create a &apos;todos&apos; table in Supabase dashboard to enable table persistence).
-          </div>
-        ) : (!todos || todos.length === 0) ? (
-          <p style={{ color: "#5C6773", fontSize: "0.85rem", margin: 0 }}>
-            No rows found in &apos;todos&apos; table. Database connection is active.
-          </p>
-        ) : (
-          <ul style={{ margin: 0, paddingLeft: "1.2rem", fontSize: "0.85rem", color: "#34D399" }}>
-            {todos.map((todo) => (
-              <li key={todo.id}>{todo.name}</li>
-            ))}
-          </ul>
-        )}
+        <Globe />
+        <aside className="panel">
+          <h3>CRYPTO <small>{s?.cryptoSrc}</small></h3>
+          {(s?.crypto ?? []).map((c) => (
+            <div className="row" key={c.sym}><span>{c.sym}</span><span>${usd(c.price)}</span><span className={c.chg >= 0 ? "up" : "dn"}>{c.chg >= 0 ? "▲" : "▼"} {Math.abs(c.chg).toFixed(2)}%</span></div>
+          ))}
+          <h3>FX · 1 USD</h3>
+          {Object.entries(s?.fx ?? {}).map(([k, v]) => <div className="row" key={k}><span>{k}</span><span>{v.toFixed(k === "JPY" ? 2 : 3)}</span><span /></div>)}
+          {!s && !err && <p className="mute">Loading…</p>}
+          {err && <p className="mute">Server se connect nahi hua.</p>}
+        </aside>
       </section>
     </main>
   );

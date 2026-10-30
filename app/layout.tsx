@@ -1,18 +1,5 @@
-export const metadata = {
-  title: "Global Intelligence Terminal",
-  description: "Institutional Financial Terminal & Telemetry",
-};
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="en">
-      <body style={{ margin: 0, backgroundColor: "#05070A", color: "#F2F5F7" }}>
-        {children}
-      </body>
-    </html>
-  );
+import "./globals.css";
+export const metadata = { title: "GLOBAL.AI — Intelligence Terminal", description: "Live global markets on a 3D globe" };
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (<html lang="en"><body>{children}</body></html>);
 }
